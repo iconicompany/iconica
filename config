@@ -1,0 +1,93 @@
+[ca]
+default_ca = ca_default
+[ca_default]
+dir = db
+database = $dir/index
+serial = $dir/serial
+new_certs_dir = $dir/certs
+default_md = sha256
+policy = policy_anything
+default_days    = 365                   # how long to certify for
+default_crl_days= 30                    # how long before next CRL
+#private_key = certs/$ENV::INTERMEDIATECN.key
+#certificate = certs/$ENV::INTERMEDIATECN.crt
+
+[policy_anything]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = match
+organizationalUnitName  = optional
+domainComponent         = optional
+commonName              = supplied
+emailAddress            = optional
+[req]
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+countryName = Country Name (2 letter code) (C)
+countryName_min = 2
+countryName_max = 2
+countryName_default = RU
+0.organizationName = Organization Name (O)
+0.organizationName_default = Iconicompany
+commonName                      = Common Name (e.g. server FQDN or YOUR name)
+commonName_max                  = 64
+emailAddress                    = Email Address
+emailAddress_max                = 64
+
+[iconicompany-ca]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always, issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, keyCertSign, cRLSign
+
+
+[intermediate-ca]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always, issuer
+basicConstraints = critical, CA:true, pathlen:1
+keyUsage = critical, digitalSignature, keyCertSign, cRLSign
+authorityInfoAccess = caIssuers;URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.der
+crlDistributionPoints = URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.crl
+nameConstraints=@name-constraints-intermediate
+
+[name-constraints-intermediate]
+excluded;dirName.0=dir-sect-intermediate-exclude
+
+[dir-sect-intermediate-exclude]
+C = ru
+O = iconicompany
+OU = admins
+
+[kube-ca]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always, issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, keyCertSign, cRLSign
+authorityInfoAccess = caIssuers;URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.der
+crlDistributionPoints = URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.crl
+nameConstraints=@name-constraints-kube
+
+[name-constraints-kube]
+permitted;email.0=empty
+permitted;DNS.0=localhost
+permitted;DNS.1=.icncd.ru
+permitted;DNS.2=.icncd.dev
+permitted;DNS.3=kubernetes
+permitted;DNS.4=kubernetes.default
+permitted;DNS.5=kubernetes.default.svc
+permitted;DNS.6=kubernetes.default.svc.cluster.local
+permitted;IP.0=127.0.0.0/255.0.0.0
+permitted;IP.1=10.0.0.0/255.0.0.0
+permitted;IP.2=0:0:0:0:0:0:0:1/ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+excluded;dirName.0=dir-sect-kube-exclude
+
+[dir-sect-kube-exclude]
+C = ru
+
+[leaf-ca]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always, issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, keyCertSign, cRLSign
+authorityInfoAccess = caIssuers;URI:http://cdp.iconicompany.com/certs/$ENV::INTERMEDIATECN.der
+crlDistributionPoints = URI:http://cdp.iconicompany.com/certs/$ENV::INTERMEDIATECN.crl

@@ -1,0 +1,15 @@
+CERTDIR=./certs
+CACERTDIR=./certs
+KEYDIR=./private
+
+DAYSROOT=9132 # 25 years
+DAYSINT=3653 # 10 years
+DAYSLEAF=365 # 1 year
+DAYSCERT=365 # 1 year
+
+export DOMAIN=iconicompany.com
+export O=iconicompany
+export C=ru
+
+export ROOTCN=${O}-ca
+export INTERMEDIATECN=intermediate-ca

@@ -12,4 +12,4 @@ export O=iconicompany
 export C=ru
 
 export ROOTCN=${O}-ca
-export INTERMEDIATECN=intermediate-ca
+export INTERMEDIATECN=step-ca

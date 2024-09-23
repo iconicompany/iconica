@@ -48,41 +48,6 @@ basicConstraints = critical, CA:true, pathlen:1
 keyUsage = critical, digitalSignature, keyCertSign, cRLSign
 authorityInfoAccess = caIssuers;URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.der
 crlDistributionPoints = URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.crl
-nameConstraints=@name-constraints-intermediate
-
-[name-constraints-intermediate]
-excluded;dirName.0=dir-sect-intermediate-exclude
-
-[dir-sect-intermediate-exclude]
-C = ru
-O = iconicompany
-OU = admins
-
-[kube-ca]
-subjectKeyIdentifier = hash
-authorityKeyIdentifier = keyid:always, issuer
-basicConstraints = critical, CA:true, pathlen:0
-keyUsage = critical, digitalSignature, keyCertSign, cRLSign
-authorityInfoAccess = caIssuers;URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.der
-crlDistributionPoints = URI:http://cdp.iconicompany.com/certs/$ENV::ROOTCN.crl
-nameConstraints=@name-constraints-kube
-
-[name-constraints-kube]
-permitted;email.0=empty
-permitted;DNS.0=localhost
-permitted;DNS.1=.icncd.ru
-permitted;DNS.2=.icncd.dev
-permitted;DNS.3=kubernetes
-permitted;DNS.4=kubernetes.default
-permitted;DNS.5=kubernetes.default.svc
-permitted;DNS.6=kubernetes.default.svc.cluster.local
-permitted;IP.0=127.0.0.0/255.0.0.0
-permitted;IP.1=10.0.0.0/255.0.0.0
-permitted;IP.2=0:0:0:0:0:0:0:1/ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-excluded;dirName.0=dir-sect-kube-exclude
-
-[dir-sect-kube-exclude]
-C = ru
 
 [leaf-ca]
 subjectKeyIdentifier = hash
